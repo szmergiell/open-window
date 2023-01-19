@@ -1,6 +1,6 @@
-extern crate open_window;
+extern crate owlib;
 
-use crate::open_window::open_window::measurement::*;
+use crate::owlib::open_window::measurement::*;
 
 fn main() {
     let indoor_measurement = Measurement {
