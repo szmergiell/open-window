@@ -15,5 +15,5 @@ pub struct Cli {
     pub outdoor_temperature: f64,
     #[arg()]
     /// Outdoor relative humidity expressed as percentage (not fraction of 1)
-    pub outdoor_humidity: f64
+    pub outdoor_humidity: f64,
 }

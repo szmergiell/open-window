@@ -2,8 +2,8 @@ mod cli;
 
 extern crate owlib;
 
-use crate::owlib::open_window::measurement::*;
 use crate::cli::*;
+use crate::owlib::open_window::measurement::*;
 use clap::Parser;
 
 fn main() {
@@ -27,15 +27,9 @@ fn main() {
         false => "Close windows",
     };
 
-    println!(
-        "Indoor dew point: {}",
-        indoor_measurement.calculate_dew_point()
-    );
+    println!("Indoor dew point: {}", indoor_dew_point);
 
-    println!(
-        "Ourdoor dew point: {}",
-        outdoor_measurement.calculate_dew_point()
-    );
+    println!("Ourdoor dew point: {}", outdoor_dew_point);
 
     println!("{}", message);
 }
