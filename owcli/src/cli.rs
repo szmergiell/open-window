@@ -8,12 +8,12 @@ pub struct Cli {
     pub indoor_temperature: f64,
     #[arg()]
     /// Indoor relative humidity expressed as percentage (not fraction of 1)
-    pub indoor_humidity: f64,
+    pub indoor_humidity: u8,
 
     #[arg()]
     /// Outdoor temperature in Celcius degress
     pub outdoor_temperature: f64,
     #[arg()]
     /// Outdoor relative humidity expressed as percentage (not fraction of 1)
-    pub outdoor_humidity: f64,
+    pub outdoor_humidity: u8,
 }
