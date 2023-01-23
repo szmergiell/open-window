@@ -1,7 +1,9 @@
 use core::fmt;
 use std::error::Error;
 
-const VALIDATION_ERROR: &str = "Relative humidity should be a percentage value between 0 and 100";
+const VALIDATION_ERROR: &str = "relative humidity should be a percentage value between 0 and 100";
+const MIN_HUMIDITY: u8 = 0;
+const MAX_HUMIDITY: u8 = 100;
 
 #[derive(Debug)]
 struct RelativeHumidityInvalid {}
@@ -30,7 +32,7 @@ impl RelativeHumidity {
 
     pub fn try_new(value: u8) -> Result<Self, Box<dyn Error>> {
         if !Self::valid(value) {
-            return Err(VALIDATION_ERROR.into());
+            return Err(Box::new(RelativeHumidityInvalid {}));
         }
 
         Ok(Self::new(value))
@@ -41,6 +43,6 @@ impl RelativeHumidity {
     }
 
     fn valid(value: u8) -> bool {
-        value <= 100
+        value >= MIN_HUMIDITY && value <= MAX_HUMIDITY
     }
 }

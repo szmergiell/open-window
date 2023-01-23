@@ -8,21 +8,22 @@ use crate::cli::*;
 use crate::owlib::open_window::measurement::*;
 use clap::Parser;
 use owlib::open_window::relative_humidity::RelativeHumidity;
+use owlib::open_window::temperature::Temperature;
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn run() -> Result<(), Box<dyn Error>> {
     let args = Cli::parse();
 
     let indoor_humidity = RelativeHumidity::try_new(args.indoor_humidity)?;
-
+    let indoor_temperature = Temperature::try_new(args.indoor_temperature)?;
     let indoor_measurement = Measurement {
-        temperature: args.indoor_temperature,
+        temperature: indoor_temperature,
         relative_humidity: indoor_humidity,
     };
 
     let outdoor_humidity = RelativeHumidity::try_new(args.outdoor_humidity)?;
-
+    let outdoor_temperature = Temperature::try_new(args.outdoor_temperature)?;
     let outdoor_measurement = Measurement {
-        temperature: args.outdoor_temperature,
+        temperature: outdoor_temperature,
         relative_humidity: outdoor_humidity,
     };
 
@@ -41,4 +42,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("{}", message);
 
     Ok(())
+}
+
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("{}", e);
+        std::process::exit(1)
+    }
+    std::process::exit(0)
 }
