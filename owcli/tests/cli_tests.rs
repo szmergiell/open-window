@@ -11,7 +11,7 @@ fn open_window_test() {
     assert
         .success()
         .code(0)
-        .stdout(predicate::str::contains("Open windows"));
+        .stdout(predicate::str::contains("Open window!"));
 }
 
 #[test]
@@ -23,5 +23,5 @@ fn close_window_test() {
     assert
         .success()
         .code(0)
-        .stdout(predicate::str::contains("Close windows"));
+        .stdout(predicate::str::contains("Close window!"));
 }

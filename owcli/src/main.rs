@@ -28,8 +28,8 @@ fn run() -> Result<&'static str, Box<dyn Error>> {
     };
 
     let message = match open_window(&indoor_measurement, &outdoor_measurement) {
-        true => "Open windows",
-        false => "Close windows",
+        true => "Open window!",
+        false => "Close window!",
     };
 
     println!(
