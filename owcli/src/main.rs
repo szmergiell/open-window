@@ -2,15 +2,15 @@ mod cli;
 
 extern crate owlib;
 
-use std::error::Error;
-
-use crate::cli::*;
-use crate::owlib::open_window::measurement::*;
 use clap::Parser;
+use cli::Cli;
+use owlib::open_window::measurement::Measurement;
+use owlib::open_window::open_window;
 use owlib::open_window::relative_humidity::RelativeHumidity;
 use owlib::open_window::temperature::Temperature;
+use std::error::Error;
 
-fn run() -> Result<(), Box<dyn Error>> {
+fn run() -> Result<&'static str, Box<dyn Error>> {
     let args = Cli::parse();
 
     let indoor_humidity = RelativeHumidity::try_new(args.indoor_humidity)?;
@@ -27,27 +27,33 @@ fn run() -> Result<(), Box<dyn Error>> {
         relative_humidity: outdoor_humidity,
     };
 
-    let indoor_dew_point = indoor_measurement.calculate_dew_point();
-    let outdoor_dew_point = outdoor_measurement.calculate_dew_point();
-
-    let message = match indoor_dew_point > outdoor_dew_point {
+    let message = match open_window(&indoor_measurement, &outdoor_measurement) {
         true => "Open windows",
         false => "Close windows",
     };
 
-    println!("Indoor dew point: {}", indoor_dew_point);
+    println!(
+        "Indoor dew point: {:.2}",
+        indoor_measurement.calculate_dew_point()
+    );
 
-    println!("Ourdoor dew point: {}", outdoor_dew_point);
+    println!(
+        "Ourdoor dew point: {:.2}",
+        outdoor_measurement.calculate_dew_point()
+    );
 
-    println!("{}", message);
-
-    Ok(())
+    Ok(message)
 }
 
 fn main() {
-    if let Err(e) = run() {
-        eprintln!("{}", e);
-        std::process::exit(1)
+    match run() {
+        Ok(message) => {
+            println!("{message}");
+            std::process::exit(0)
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1)
+        }
     }
-    std::process::exit(0)
 }

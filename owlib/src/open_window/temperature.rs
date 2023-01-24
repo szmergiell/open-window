@@ -43,6 +43,6 @@ impl Temperature {
     }
 
     fn valid(value: f64) -> bool {
-        value >= MIN_TEMP && value <= MAX_TEMP
+        (MIN_TEMP..=MAX_TEMP).contains(&value)
     }
 }

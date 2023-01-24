@@ -17,3 +17,34 @@ impl Measurement {
                 - ((17.625 * self.temperature.value()) / (243.04 + self.temperature.value())))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::open_window::{relative_humidity::RelativeHumidity, temperature::Temperature};
+
+    use super::Measurement;
+
+    #[test]
+    fn indoor_measurement_test() {
+        let measurement = Measurement {
+            temperature: Temperature::new(18.0),
+            relative_humidity: RelativeHumidity::new(55),
+        };
+
+        let dew_point = measurement.calculate_dew_point();
+
+        assert_eq!(format!("{dew_point:.2}"), "8.82");
+    }
+
+    #[test]
+    fn outdoor_measurement_test() {
+        let measurement = Measurement {
+            temperature: Temperature::new(-5.0),
+            relative_humidity: RelativeHumidity::new(80),
+        };
+
+        let dew_point = measurement.calculate_dew_point();
+
+        assert_eq!(format!("{dew_point:.2}"), "-7.92");
+    }
+}

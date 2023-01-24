@@ -43,6 +43,6 @@ impl RelativeHumidity {
     }
 
     fn valid(value: u8) -> bool {
-        value >= MIN_HUMIDITY && value <= MAX_HUMIDITY
+        (MIN_HUMIDITY..=MAX_HUMIDITY).contains(&value)
     }
 }
