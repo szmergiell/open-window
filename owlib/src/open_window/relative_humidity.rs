@@ -12,7 +12,7 @@ impl Error for RelativeHumidityInvalid {}
 
 impl fmt::Display for RelativeHumidityInvalid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", VALIDATION_ERROR)
+        write!(f, "{VALIDATION_ERROR}")
     }
 }
 

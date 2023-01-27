@@ -2,7 +2,13 @@
 name = "owlib"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["szmergiell <szmergiel@pm.me>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/szmergiell/open_window"
+repository = "https://github.com/szmergiell/open_window"
+keywords = ["lib", "humidity", "dew", "point"]
+categories = ["science"]
+description = "Library for calculating dew point based on temperature and relative humidity"
 
 [dependencies]

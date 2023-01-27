@@ -12,7 +12,7 @@ impl Error for TemperatureInvalid {}
 
 impl fmt::Display for TemperatureInvalid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", VALIDATION_ERROR)
+        write!(f, "{VALIDATION_ERROR}")
     }
 }
 

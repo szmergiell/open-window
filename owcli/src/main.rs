@@ -4,6 +4,7 @@ extern crate owlib;
 
 use clap::Parser;
 use cli::Cli;
+use human_panic::setup_panic;
 use owlib::open_window::measurement::Measurement;
 use owlib::open_window::open_window;
 use owlib::open_window::relative_humidity::RelativeHumidity;
@@ -46,6 +47,8 @@ fn run() -> Result<&'static str, Box<dyn Error>> {
 }
 
 fn main() {
+    setup_panic!();
+
     match run() {
         Ok(message) => {
             println!("{message}");
