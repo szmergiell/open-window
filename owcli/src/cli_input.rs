@@ -2,7 +2,7 @@ use clap::Parser;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
-pub struct Cli {
+pub struct CliInput {
     #[arg()]
     /// Indoor temperature in Celcius degress
     pub indoor_temperature: f64,
@@ -16,4 +16,8 @@ pub struct Cli {
     #[arg()]
     /// Outdoor relative humidity expressed as percentage (not fraction of 1)
     pub outdoor_humidity: u8,
+
+    #[arg(short, long)]
+    /// Output JSON instead of human readable messages
+    pub json: bool,
 }

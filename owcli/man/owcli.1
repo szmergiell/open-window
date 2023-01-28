@@ -1,0 +1,35 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH owcli 1  "owcli 0.1.0" 
+.SH NAME
+owcli \- Program answers a question whether you should open window to decrease indoor humidity based on indoor / outdoor temperature and relative humidity
+.SH SYNOPSIS
+\fBowcli\fR [\fB\-j\fR|\fB\-\-json\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] <\fIINDOOR_TEMPERATURE\fR> <\fIINDOOR_HUMIDITY\fR> <\fIOUTDOOR_TEMPERATURE\fR> <\fIOUTDOOR_HUMIDITY\fR> 
+.SH DESCRIPTION
+Program answers a question whether you should open window to decrease indoor humidity based on indoor / outdoor temperature and relative humidity
+.SH OPTIONS
+.TP
+\fB\-j\fR, \fB\-\-json\fR=\fIJSON\fR
+Output JSON instead of human readable messages
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version
+.TP
+<\fIINDOOR_TEMPERATURE\fR>
+Indoor temperature in Celcius degress
+.TP
+<\fIINDOOR_HUMIDITY\fR>
+Indoor relative humidity expressed as percentage (not fraction of 1)
+.TP
+<\fIOUTDOOR_TEMPERATURE\fR>
+Outdoor temperature in Celcius degress
+.TP
+<\fIOUTDOOR_HUMIDITY\fR>
+Outdoor relative humidity expressed as percentage (not fraction of 1)
+.SH VERSION
+v0.1.0
+.SH AUTHORS
+szmergiell <szmergiel@pm.me>
