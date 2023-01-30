@@ -23,7 +23,6 @@ assert_cmd = "2.0.8"
 predicates = "2.1.5"
 
 [build-dependencies]
-# TODO: do I have to declare clap twice?
 clap = { version = "4.1.1" }
 clap_complete = "4.1.1"
 clap_mangen = "0.2.7"
