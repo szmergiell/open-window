@@ -1,8 +1,6 @@
 mod cli_input;
 mod cli_output;
 
-extern crate owlib;
-
 use clap::Parser;
 use cli_input::CliInput;
 use cli_output::CliOutput;

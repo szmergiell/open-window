@@ -5,8 +5,9 @@ const VALIDATION_ERROR: &str = "temperature must be a decimal value between -100
 const MIN_TEMP: f64 = -100.0;
 const MAX_TEMP: f64 = 100.0;
 
+/// An error returned by [Temperature::try_new] if provided value is invalid.
 #[derive(Debug)]
-struct TemperatureInvalid {}
+pub struct TemperatureInvalid {}
 
 impl Error for TemperatureInvalid {}
 
@@ -16,12 +17,18 @@ impl fmt::Display for TemperatureInvalid {
     }
 }
 
+/// Holds a temperature value expressed in Celcius degrees (°C).
 #[derive(Debug)]
 pub struct Temperature {
     value: f64,
 }
 
 impl Temperature {
+    /// Creates new `Temperature` struct.
+    ///
+    /// # Panics
+    ///
+    /// Panics if provided value does not fall within following range `(-100.0..=100.0)`.
     pub fn new(value: f64) -> Self {
         if !Self::valid(value) {
             panic!("{}", VALIDATION_ERROR);
@@ -30,6 +37,10 @@ impl Temperature {
         Self { value }
     }
 
+    /// Creates new `Temperature` struct.
+    ///
+    /// As opposed to [Temperature::new] function it does not panic, but returns
+    /// a [TemperatureInvalid] error instead.
     pub fn try_new(value: f64) -> Result<Self, Box<dyn Error>> {
         if !Self::valid(value) {
             return Err(Box::new(TemperatureInvalid {}));
@@ -38,6 +49,7 @@ impl Temperature {
         Ok(Self::new(value))
     }
 
+    /// Returns a temperature value.
     pub fn value(&self) -> f64 {
         self.value
     }

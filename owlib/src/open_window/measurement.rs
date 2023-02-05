@@ -1,12 +1,17 @@
 use super::{relative_humidity::RelativeHumidity, temperature::Temperature};
 
+/// Holds a temperature and relative humidity values.
 #[derive(Debug)]
 pub struct Measurement {
+    /// Temperature.
     pub temperature: Temperature,
+    /// Relative humidity.
     pub relative_humidity: RelativeHumidity,
 }
 
 impl Measurement {
+    /// Calculates a dew point based on temperature and relative humidity values
+    /// held by this `Measurement` struct.
     pub fn calculate_dew_point(&self) -> f64 {
         // 243.04*(LN(RH/100)+((17.625*T)/(243.04+T)))/(17.625-LN(RH/100)-((17.625*T)/(243.04+T)))
         243.04
