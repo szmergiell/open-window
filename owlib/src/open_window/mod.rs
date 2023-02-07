@@ -40,8 +40,38 @@ pub mod temperature;
 /// let open_window = open_window(&indoor_measurement, &outdoor_measurement);
 /// ```
 pub fn open_window(indoor_measurement: &Measurement, outdoor_measurement: &Measurement) -> bool {
+    open_window_result(indoor_measurement, outdoor_measurement).open_window
+}
+
+/// Holds detailed calculation results performed while obtaining "open window" verdict.
+pub struct OpenWindowResult {
+    /// Indoor dew point.
+    pub indoor_dew_point: f64,
+    /// Outdoor dew point.
+    pub outdoor_dew_point: f64,
+    /// Open window verdict.
+    pub open_window: bool,
+}
+
+/// Answers a question whether one should open windows in order to decrease
+/// indoor humidity.
+///
+/// The decision is made by comparing indoor and outdoor dew points, calculated
+/// from indoor/outdoor measurements.
+///
+/// As opposed to [open_window::open_window] this method - beside "open window" verdict -
+/// also returns intermediate calculations steps - indoor / outdoor dew points.
+pub fn open_window_result(
+    indoor_measurement: &Measurement,
+    outdoor_measurement: &Measurement,
+) -> OpenWindowResult {
     let indoor_dew_point = indoor_measurement.calculate_dew_point();
     let outdoor_dew_point = outdoor_measurement.calculate_dew_point();
+    let open_window = indoor_dew_point > outdoor_dew_point;
 
-    indoor_dew_point > outdoor_dew_point
+    OpenWindowResult {
+        indoor_dew_point,
+        outdoor_dew_point,
+        open_window,
+    }
 }
