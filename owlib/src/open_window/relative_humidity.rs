@@ -7,7 +7,7 @@ const MAX_HUMIDITY: u8 = 100;
 
 /// An error returned by [RelativeHumidity::try_new] if provided value is invalid.
 #[derive(Debug)]
-pub struct RelativeHumidityInvalid {}
+pub struct RelativeHumidityInvalid(pub &'static str);
 
 impl Error for RelativeHumidityInvalid {}
 
@@ -41,9 +41,9 @@ impl RelativeHumidity {
     ///
     /// As opposed to [RelativeHumidity::new] function it does not panic, but returns a validation
     /// error instead.
-    pub fn try_new(value: u8) -> Result<Self, Box<dyn Error>> {
+    pub fn try_new(value: u8) -> Result<Self, RelativeHumidityInvalid> {
         if !Self::valid(value) {
-            return Err(Box::new(RelativeHumidityInvalid {}));
+            return Err(RelativeHumidityInvalid(VALIDATION_ERROR));
         }
 
         Ok(Self::new(value))

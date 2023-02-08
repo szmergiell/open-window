@@ -7,7 +7,7 @@ const MAX_TEMP: f64 = 100.0;
 
 /// An error returned by [Temperature::try_new] if provided value is invalid.
 #[derive(Debug)]
-pub struct TemperatureInvalid {}
+pub struct TemperatureInvalid(pub &'static str);
 
 impl Error for TemperatureInvalid {}
 
@@ -41,9 +41,9 @@ impl Temperature {
     ///
     /// As opposed to [Temperature::new] function it does not panic, but returns
     /// a [TemperatureInvalid] error instead.
-    pub fn try_new(value: f64) -> Result<Self, Box<dyn Error>> {
+    pub fn try_new(value: f64) -> Result<Self, TemperatureInvalid> {
         if !Self::valid(value) {
-            return Err(Box::new(TemperatureInvalid {}));
+            return Err(TemperatureInvalid(VALIDATION_ERROR));
         }
 
         Ok(Self::new(value))
