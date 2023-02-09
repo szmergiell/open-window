@@ -40,11 +40,11 @@ pub mod temperature;
 /// let open_window = open_window(&indoor_measurement, &outdoor_measurement);
 /// ```
 pub fn open_window(indoor_measurement: &Measurement, outdoor_measurement: &Measurement) -> bool {
-    open_window_result(indoor_measurement, outdoor_measurement).open_window
+    open_window_verdict(indoor_measurement, outdoor_measurement).open_window
 }
 
 /// Holds detailed calculation results performed while obtaining "open window" verdict.
-pub struct OpenWindowResult {
+pub struct OpenWindowVerdict {
     /// Indoor dew point.
     pub indoor_dew_point: f64,
     /// Outdoor dew point.
@@ -61,15 +61,15 @@ pub struct OpenWindowResult {
 ///
 /// As opposed to [open_window::open_window] this method - beside "open window" verdict -
 /// also returns intermediate calculations steps - indoor / outdoor dew points.
-pub fn open_window_result(
+pub fn open_window_verdict(
     indoor_measurement: &Measurement,
     outdoor_measurement: &Measurement,
-) -> OpenWindowResult {
+) -> OpenWindowVerdict {
     let indoor_dew_point = indoor_measurement.calculate_dew_point();
     let outdoor_dew_point = outdoor_measurement.calculate_dew_point();
     let open_window = indoor_dew_point > outdoor_dew_point;
 
-    OpenWindowResult {
+    OpenWindowVerdict {
         indoor_dew_point,
         outdoor_dew_point,
         open_window,
