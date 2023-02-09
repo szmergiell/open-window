@@ -1,16 +1,17 @@
+use http_api_problem::{HttpApiProblem};
 use owlib::open_window::{
     measurement::Measurement, open_window_result, relative_humidity::{RelativeHumidity, RelativeHumidityInvalid},
     temperature::{Temperature, TemperatureInvalid},
 };
 use serde_json::json;
 
-use std::{net::SocketAddr, collections::{HashMap, HashSet}};
+use std::{net::SocketAddr, collections::{HashMap, HashSet}, fmt::format};
 
 use axum::{
     http::{StatusCode, Uri},
     response::{Json, IntoResponse, Response},
     routing::post,
-    Router,
+    Router, extract::{self, OriginalUri},
 };
 
 use serde::{Deserialize, Serialize};
@@ -19,7 +20,7 @@ use serde::{Deserialize, Serialize};
 async fn main() {
     let app = Router::new()
         .fallback(fallback)
-        .route("/open-window", post(post_open_window));
+        .route("/open-window/:id", post(post_open_window));
 
     let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], 3000));
 
@@ -89,9 +90,17 @@ impl IntoResponse for ValidationErrorResponse {
     }
 }
 
+impl From<RelativeHumidityInvalid> for ValidationErrorResponse {
+    fn from(value: RelativeHumidityInvalid) -> Self {
+        ValidationErrorResponse {
+            errors: HashMap::new()
+        }
+    }
+}
+
 // curl -i -X POST localhost:3000/open-window -H 'Content-Type: application/json' -d '{ "indoor_measurement": { "temperature": 18.0, "relative_humidity": 50 }, "outdoor_measurement": { "temperature": 0.0, "relative_humidity": 85 }}'
 
-async fn post_open_window(Json(payload): Json<OpenWindowRequest>) -> Result<Json<OpenWindowResponse>, ValidationErrorResponse> {
+async fn post_open_window(OriginalUri(uri): OriginalUri, Json(payload): Json<OpenWindowRequest>) -> Result<Json<OpenWindowResponse>, HttpApiProblem> {
     // TODO: validation, error codes, etc.
     // if let Err(TemperatureInvalid(msg)) = Temperature::try_new(payload.indoor_measurement.temperature) {
     //     return Err(ValidationError::InvalidTemperature(format!("indoor_measurement.temperature: {msg}")))
@@ -104,14 +113,27 @@ async fn post_open_window(Json(payload): Json<OpenWindowRequest>) -> Result<Json
     // if let Err(RelativeHumidityInvalid(msg)) = RelativeHumidity::try_new(payload.indoor_measurement.relative_humidity) {
     //     return Err(ValidationError::InvalidHumidity(format!("indoor_measurement.relative_humidity: {msg}")))
     // }
-
     if let Err(RelativeHumidityInvalid(msg)) = RelativeHumidity::try_new(payload.outdoor_measurement.relative_humidity) {
         let mut validation_error_response = ValidationErrorResponse {
             errors: HashMap::new()
         };
 
         validation_error_response.errors.insert(String::from("outdoor_measurement.relative_humidity"), vec![msg.into()]);
-        return Err(validation_error_response)
+        // let api_error = ApiError::builder(StatusCode::BAD_REQUEST)
+        //     .title("Outdoor relative humidity is invalid.")
+        //     .message(msg)
+        //     .type_url("relative-humidity-invalid")
+        //     .instance("uri")
+        //     .finish();
+        //     .into_http_api_problem();
+        // return Err(api_error)
+        // return Err(validation_error_response)
+        let problem = HttpApiProblem::new(StatusCode::BAD_REQUEST)
+            .title("Outdoor relative humidity is invalid.")
+            .detail(msg)
+            .type_url("relative-humidity-invalid")
+            .instance(uri.to_string());
+        return Err(problem)
     }
 
     let indoor_temperature = Temperature::new(payload.indoor_measurement.temperature);
