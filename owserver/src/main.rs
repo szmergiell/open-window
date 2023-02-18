@@ -7,11 +7,14 @@ use owlib::open_window::{
     temperature::{Temperature, TemperatureInvalid},
 };
 
+use tower::ServiceBuilder;
+use tower_http::cors::{Any, CorsLayer};
+
 use std::{collections::HashMap, net::SocketAddr};
 
 use axum::{
     extract::OriginalUri,
-    http::{StatusCode, Uri},
+    http::{Method, StatusCode, Uri},
     response::Json,
     routing::post,
     Router,
@@ -21,8 +24,15 @@ use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() {
+    let cors = CorsLayer::new()
+        .allow_methods(vec![Method::GET, Method::POST])
+        .allow_origin(Any);
+
+    let service = ServiceBuilder::new().layer(cors);
+
     let app = Router::new()
         .fallback(fallback)
+        .layer(service)
         .route("/open-window", post(post_open_window));
 
     let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], 3000));

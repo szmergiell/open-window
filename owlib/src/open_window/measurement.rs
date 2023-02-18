@@ -29,27 +29,30 @@ mod tests {
 
     use super::Measurement;
 
-    #[test]
-    fn indoor_measurement_test() {
-        let measurement = Measurement {
-            temperature: Temperature::new(18.0),
-            relative_humidity: RelativeHumidity::new(55),
-        };
+    macro_rules! dew_point_tests {
+        ($($name:ident: $value:expr,)*) => {
+            $(
+                #[test]
+                fn $name() {
+                    let (temperature, relative_humidity, expected) = $value;
 
-        let dew_point = measurement.calculate_dew_point();
+                    let measurement = Measurement {
+                        temperature: Temperature::new(temperature),
+                        relative_humidity: RelativeHumidity::new(relative_humidity),
+                    };
 
-        assert_eq!(format!("{dew_point:.2}"), "8.82");
+                    let dew_point = measurement.calculate_dew_point();
+
+                    assert_eq!(expected, format!("{dew_point:.2}"));
+                }
+             )*
+        }
     }
 
-    #[test]
-    fn outdoor_measurement_test() {
-        let measurement = Measurement {
-            temperature: Temperature::new(-5.0),
-            relative_humidity: RelativeHumidity::new(80),
-        };
-
-        let dew_point = measurement.calculate_dew_point();
-
-        assert_eq!(format!("{dew_point:.2}"), "-7.92");
+    dew_point_tests! {
+        indoor: (18.0, 55, "8.82"),
+        outdoor: (-5.0, 80, "-7.92"),
+        // TODO: investigate this problem?
+        zero: (0.0, 0, "NaN"),
     }
 }
