@@ -6,7 +6,7 @@ use cli_input::CliInput;
 use cli_output::CliOutput;
 use human_panic::setup_panic;
 use owlib::open_window::measurement::Measurement;
-use owlib::open_window::open_window;
+use owlib::open_window::open_window_result;
 use owlib::open_window::relative_humidity::RelativeHumidity;
 use owlib::open_window::temperature::Temperature;
 use std::error::Error;
@@ -28,10 +28,12 @@ fn run() -> Result<(CliOutput, bool), Box<dyn Error>> {
         relative_humidity: outdoor_humidity,
     };
 
+    let open_window_result = open_window_result(&indoor_measurement, &outdoor_measurement);
+
     let cli_output = CliOutput {
-        indoor_dew_point: indoor_measurement.calculate_dew_point(),
-        outdoor_dew_point: outdoor_measurement.calculate_dew_point(),
-        open_window: open_window(&indoor_measurement, &outdoor_measurement),
+        indoor_dew_point: open_window_result.indoor_dew_point,
+        outdoor_dew_point: open_window_result.outdoor_dew_point,
+        open_window: open_window_result.open_window,
     };
 
     Ok((cli_output, args.json))

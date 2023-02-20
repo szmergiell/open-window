@@ -1,8 +1,8 @@
 use core::fmt;
 use std::error::Error;
 
-const VALIDATION_ERROR: &str = "relative humidity should be a percentage value between 0 and 100";
-const MIN_HUMIDITY: u8 = 0;
+const VALIDATION_ERROR: &str = "relative humidity should be a percentage value between 1 and 100";
+const MIN_HUMIDITY: u8 = 1;
 const MAX_HUMIDITY: u8 = 100;
 
 /// An error returned by [RelativeHumidity::try_new] if provided value is invalid.

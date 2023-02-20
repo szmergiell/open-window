@@ -2,7 +2,7 @@ use http_api_problem::HttpApiProblem;
 
 use owlib::open_window::{
     measurement::Measurement,
-    open_window_verdict,
+    open_window_result,
     relative_humidity::{RelativeHumidity, RelativeHumidityInvalid},
     temperature::{Temperature, TemperatureInvalid},
 };
@@ -103,12 +103,12 @@ async fn post_open_window(
             relative_humidity: outdoor_humidity_result.unwrap(),
         };
 
-        let open_window_verdict = open_window_verdict(&indoor_measurement, &outdoor_measurement);
+        let open_window_result = open_window_result(&indoor_measurement, &outdoor_measurement);
 
         let open_window_response = OpenWindowResponse {
-            indoor_dew_point: open_window_verdict.indoor_dew_point,
-            outdoor_dew_point: open_window_verdict.outdoor_dew_point,
-            open_window: open_window_verdict.open_window,
+            indoor_dew_point: open_window_result.indoor_dew_point,
+            outdoor_dew_point: open_window_result.outdoor_dew_point,
+            open_window: open_window_result.open_window,
         };
 
         return Ok(Json(open_window_response));

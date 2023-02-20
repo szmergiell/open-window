@@ -52,7 +52,6 @@ mod tests {
     dew_point_tests! {
         indoor: (18.0, 55, "8.82"),
         outdoor: (-5.0, 80, "-7.92"),
-        // TODO: investigate this problem?
-        zero: (0.0, 0, "NaN"),
+        zero: (0.0, 1, "-50.35"),
     }
 }
