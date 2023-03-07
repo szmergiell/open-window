@@ -1,2 +1,2 @@
 [workspace]
-members = ["owlib", "owcli", "owserver"]
+members = ["owlib", "owcli", "owserver", "owapp"]
