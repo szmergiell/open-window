@@ -1,6 +1,7 @@
 use owlib::open_window::{measurement::Measurement, temperature::Temperature, relative_humidity::RelativeHumidity};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
+use wasm_bindgen::prelude::*;
 
 #[function_component(App)]
 fn app() -> Html {
@@ -30,18 +31,32 @@ struct MeasurementProps {
 
 #[function_component(MeasurementComponent)]
 fn measurement(MeasurementProps { temperature, relative_humidity }: &MeasurementProps) -> Html {
-    let dew_point = use_state(|| {
+    let temperature_state = use_state(|| *temperature);
+    let relative_humidity_state = use_state(|| *relative_humidity);
+
+    let measurement_memo = use_memo(|(temperature, relative_humidity)| {
         Measurement {
-            temperature: temperature.clone(),
-            relative_humidity: relative_humidity.clone()
-        }.calculate_dew_point()
-    });
+            temperature: *temperature,
+            relative_humidity: *relative_humidity
+        }
+    }, (*temperature_state, *relative_humidity_state));
+
+    let dew_point_memo = use_memo(|measurement| {
+        measurement.calculate_dew_point()
+    }, *measurement_memo);
+
+    let humidity_change = {
+        let relative_humidity_state = relative_humidity_state.clone();
+        Callback::from(move |number: u8| {
+            relative_humidity_state.set(RelativeHumidity::new(number));
+        })
+    };
 
     html! {
         <>
-            <TemperatureComponent value={temperature.value()} />
-            <RelativeHumidityComponent value={relative_humidity.value()} />
-            <input type="number" value={dew_point.to_string()}/>
+            <TemperatureComponent value={temperature_state.value()} />
+            <RelativeHumidityComponent value={relative_humidity_state.value()} humidity_change={humidity_change} />
+            <input type="number" value={dew_point_memo.to_string()}/>
         </>
     }
 }
@@ -62,19 +77,32 @@ fn temperature(TemperatureProps { value }: &TemperatureProps) -> Html {
 
 #[derive(Properties, PartialEq)]
 struct RelativeHumidityProps {
-    value: u8
+    value: u8,
+    humidity_change: Callback<u8>
 }
 
 #[function_component(RelativeHumidityComponent)]
-fn relative_humidity(RelativeHumidityProps { value }: &RelativeHumidityProps) -> Html {
+fn relative_humidity(RelativeHumidityProps { value, humidity_change }: &RelativeHumidityProps) -> Html {
 
-    let oninput: Callback<InputEvent> = Callback::from(move |e: InputEvent| {
-        let input_el: HtmlInputElement = e.target_unchecked_into();
-    });
+    let internal_onchange = {
+        let humidity_change = humidity_change.clone();
+
+        Callback::from(move |e: Event| {
+            let target = e.target();
+            let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
+            if let Some(input) = input {
+                let string_value = input.value();
+                let value_result = string_value.parse::<u8>();
+                if let Ok(number) = value_result {
+                    humidity_change.emit(number);
+                }
+            }
+        })
+    };
 
     html! {
         <>
-            <input type="number" min="0" max="100" step="1" value={value.to_string()} {oninput}/>
+            <input type="number" min="1" max="100" step="1" value={value.to_string()} onchange={internal_onchange}/>
         </>
     }
 }

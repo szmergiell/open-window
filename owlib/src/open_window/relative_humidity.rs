@@ -18,7 +18,7 @@ impl fmt::Display for RelativeHumidityInvalid {
 }
 
 /// Holds an integer value represeting relative humidity expressed as percentage (%).
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub struct RelativeHumidity {
     value: u8,
 }
