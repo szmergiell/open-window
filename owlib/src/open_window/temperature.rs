@@ -18,7 +18,7 @@ impl fmt::Display for TemperatureInvalid {
 }
 
 /// Holds a temperature value expressed in Celcius degrees (°C).
-#[derive(Debug, Clone, PartialEq, Copy)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Temperature {
     value: f64,
 }
