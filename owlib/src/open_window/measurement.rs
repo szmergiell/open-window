@@ -1,7 +1,7 @@
 use super::{relative_humidity::RelativeHumidity, temperature::Temperature};
 
 /// Holds a temperature and relative humidity values.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct Measurement {
     /// Temperature.
     pub temperature: Temperature,

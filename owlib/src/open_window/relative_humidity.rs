@@ -58,3 +58,9 @@ impl RelativeHumidity {
         (MIN_HUMIDITY..=MAX_HUMIDITY).contains(&value)
     }
 }
+
+impl Default for RelativeHumidity {
+    fn default() -> Self {
+        Self { value: MIN_HUMIDITY }
+    }
+}

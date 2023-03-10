@@ -1,4 +1,4 @@
-use std::{str::FromStr, fmt::Display, string};
+use std::{str::FromStr, fmt::Display};
 
 use owlib::open_window::{measurement::Measurement, temperature::Temperature, relative_humidity::RelativeHumidity, self};
 use web_sys::HtmlInputElement;
@@ -29,16 +29,30 @@ fn app() -> Html {
         String::from("NO :(")
     }, (indoor_measurement.clone(), outdoor_measurement.clone()));
 
+    let indoor_measurement_changed = {
+        let indoor_measurement = indoor_measurement.clone();
+        Callback::from(move |measurement: Measurement| {
+            indoor_measurement.set(measurement);
+        })
+    };
+
+    let outdoor_measurement_changed = {
+        let outdoor_measurement = outdoor_measurement.clone();
+        Callback::from(move |measurement: Measurement| {
+            outdoor_measurement.set(measurement);
+        })
+    };
+
     html! {
         <>
             <h1>{ "Open Window App" }</h1>
             <MeasurementComponent
-                temperature={indoor_measurement.temperature.clone()}
-                relative_humidity={indoor_measurement.relative_humidity.clone()}
+                measurement={(*indoor_measurement).clone()}
+                measurement_changed={indoor_measurement_changed}
             />
             <MeasurementComponent
-                temperature={outdoor_measurement.temperature.clone()}
-                relative_humidity={outdoor_measurement.relative_humidity.clone()}
+                measurement={(*outdoor_measurement).clone()}
+                measurement_changed={outdoor_measurement_changed}
             />
             <h2>{open_window_memo}</h2>
         </>
@@ -47,29 +61,30 @@ fn app() -> Html {
 
 #[derive(Properties, PartialEq)]
 struct MeasurementProps {
-    temperature: Temperature,
-    relative_humidity: RelativeHumidity,
-    dew_point_changed: Option<Callback<f64>>
+    #[prop_or_default]
+    measurement: Measurement,
+    measurement_changed: Option<Callback<Measurement>>
 }
 
 #[function_component(MeasurementComponent)]
-fn measurement(MeasurementProps { temperature, relative_humidity, dew_point_changed }: &MeasurementProps) -> Html {
-    let temperature_state = use_state(|| temperature.clone());
-    let relative_humidity_state = use_state(|| relative_humidity.clone());
+fn measurement(MeasurementProps { measurement, measurement_changed }: &MeasurementProps) -> Html {
+    let measurement_state = use_state(|| measurement.clone());
+    let temperature_state = use_state(|| measurement.temperature.clone());
+    let relative_humidity_state = use_state(|| measurement.relative_humidity.clone());
 
     let measurement_memo = use_memo(|(temperature, relative_humidity)| {
-        Measurement {
+        let measurement = Measurement {
             temperature: temperature.to_owned(),
             relative_humidity: relative_humidity.to_owned()
+        };
+        if let Some(measurement_changed) = measurement_changed {
+            measurement_changed.emit(measurement.clone());
         }
+        measurement
     }, ((*temperature_state).clone(), (*relative_humidity_state).clone()));
 
     let dew_point_memo = use_memo(|measurement| {
-        let dew_point = measurement.calculate_dew_point();
-        if let Some(dew_point_changed) = dew_point_changed {
-            dew_point_changed.emit(dew_point);
-        }
-        dew_point
+        measurement.calculate_dew_point()
     }, (*measurement_memo).clone());
 
     let humidity_changed = {
@@ -87,7 +102,7 @@ fn measurement(MeasurementProps { temperature, relative_humidity, dew_point_chan
     };
 
     html! {
-        <>
+        <div>
             <TemperatureComponent
                 value={temperature_state.value()}
                 {temperature_changed}
@@ -96,8 +111,8 @@ fn measurement(MeasurementProps { temperature, relative_humidity, dew_point_chan
                 value={relative_humidity_state.value()}
                 {humidity_changed}
             />
-            <input type="number" value={dew_point_memo.to_string()}/>
-        </>
+            <input type="number" disabled={true} value={dew_point_memo.to_string()}/>
+        </div>
     }
 }
 
