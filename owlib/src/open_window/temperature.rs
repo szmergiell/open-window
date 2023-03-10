@@ -2,8 +2,10 @@ use core::fmt;
 use std::error::Error;
 
 const VALIDATION_ERROR: &str = "temperature must be a decimal value between -100.0 and 100.0";
-const MIN_TEMP: f64 = -100.0;
-const MAX_TEMP: f64 = 100.0;
+/// Minimum value of temperature
+pub const MIN_TEMP: f64 = -100.0;
+/// Maximum value of temperature
+pub const MAX_TEMP: f64 = 100.0;
 
 /// An error returned by [Temperature::try_new] if provided value is invalid.
 #[derive(Debug)]

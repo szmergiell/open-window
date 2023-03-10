@@ -1,25 +1,15 @@
 use std::{str::FromStr, fmt::Display};
 
-use owlib::open_window::{measurement::Measurement, temperature::Temperature, relative_humidity::RelativeHumidity, self};
+use owlib::open_window::{measurement::Measurement, temperature::{Temperature, MIN_TEMP, MAX_TEMP}, relative_humidity::{RelativeHumidity, MIN_HUMIDITY, MAX_HUMIDITY}, self};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[function_component(App)]
 fn app() -> Html {
-    let indoor_measurement = use_state(|| {
-        Measurement {
-            temperature: Temperature::new(0.0),
-            relative_humidity: RelativeHumidity::new(1)
-        }
-    });
+    let indoor_measurement = use_state(Measurement::default);
 
-    let outdoor_measurement = use_state(|| {
-        Measurement {
-            temperature: Temperature::new(0.0),
-            relative_humidity: RelativeHumidity::new(1)
-        }
-    });
+    let outdoor_measurement = use_state(Measurement::default);
 
     let open_window_memo = use_memo(|(indoor_measurement, outdoor_measurement)| {
         let open_window = open_window::open_window(indoor_measurement, outdoor_measurement);
@@ -63,74 +53,87 @@ fn app() -> Html {
 struct MeasurementProps {
     #[prop_or_default]
     measurement: Measurement,
-    measurement_changed: Option<Callback<Measurement>>
+    #[prop_or_default]
+    measurement_changed: Callback<Measurement>
 }
 
-#[function_component(MeasurementComponent)]
-fn measurement(MeasurementProps { measurement, measurement_changed }: &MeasurementProps) -> Html {
+#[function_component]
+fn MeasurementComponent(MeasurementProps { measurement, measurement_changed }: &MeasurementProps) -> Html {
     let measurement_state = use_state(|| measurement.clone());
-    let temperature_state = use_state(|| measurement.temperature.clone());
-    let relative_humidity_state = use_state(|| measurement.relative_humidity.clone());
-
-    let measurement_memo = use_memo(|(temperature, relative_humidity)| {
-        let measurement = Measurement {
-            temperature: temperature.to_owned(),
-            relative_humidity: relative_humidity.to_owned()
-        };
-        if let Some(measurement_changed) = measurement_changed {
-            measurement_changed.emit(measurement.clone());
-        }
-        measurement
-    }, ((*temperature_state).clone(), (*relative_humidity_state).clone()));
-
-    let dew_point_memo = use_memo(|measurement| {
-        measurement.calculate_dew_point()
-    }, (*measurement_memo).clone());
 
     let humidity_changed = {
-        let relative_humidity_state = relative_humidity_state.clone();
-        Callback::from(move |number: u8| {
-            relative_humidity_state.set(RelativeHumidity::new(number));
+        let measurement_state = measurement_state.clone();
+        let measurement_changed = measurement_changed.clone();
+
+        Callback::from(move |relative_humidity: RelativeHumidity| {
+            let measurement = Measurement {
+                temperature: measurement_state.temperature.clone(),
+                relative_humidity
+            };
+            measurement_state.set(measurement.clone());
+            measurement_changed.emit(measurement);
         })
     };
 
     let temperature_changed = {
-        let temperature_state = temperature_state.clone();
-        Callback::from(move |number: f64| {
-            temperature_state.set(Temperature::new(number));
+        let measurement_state = measurement_state.clone();
+        let measurement_changed = measurement_changed.clone();
+
+        Callback::from(move |temperature: Temperature| {
+            let measurement = Measurement {
+                temperature,
+                relative_humidity: measurement_state.relative_humidity.clone()
+            };
+            measurement_state.set(measurement.clone());
+            measurement_changed.emit(measurement);
         })
     };
 
     html! {
         <div>
             <TemperatureComponent
-                value={temperature_state.value()}
+                value={measurement_state.temperature.clone()}
                 {temperature_changed}
             />
             <RelativeHumidityComponent
-                value={relative_humidity_state.value()}
+                value={measurement_state.relative_humidity.clone()}
                 {humidity_changed}
             />
-            <input type="number" disabled={true} value={dew_point_memo.to_string()}/>
+            <input type="number" disabled={true} value={measurement_state.calculate_dew_point().to_string()}/>
         </div>
     }
 }
 
 #[derive(Properties, PartialEq)]
 struct TemperatureProps {
-    value: f64,
-    temperature_changed: Callback<f64>
+    #[prop_or_default]
+    value: Temperature,
+    #[prop_or_default]
+    temperature_changed: Callback<Temperature>
 }
 
-#[function_component(TemperatureComponent)]
-fn temperature(TemperatureProps { value, temperature_changed }: &TemperatureProps) -> Html {
+#[function_component]
+fn TemperatureComponent(TemperatureProps { value, temperature_changed }: &TemperatureProps) -> Html {
+    let temperature_state = use_state(|| value.clone());
+    let temperature_changed = temperature_changed.clone();
+
+    let number_changed = {
+        let temperature_state = temperature_state.clone();
+
+        Callback::from(move |number: f64| {
+            let temperature = Temperature::new(number);
+            temperature_state.set(temperature.clone());
+            temperature_changed.emit(temperature);
+        })
+    };
+
     html! {
         <NumberInput<f64>
-            min={-100.0}
-            max={100.0}
+            min={MIN_TEMP}
+            max={MAX_TEMP}
             step={0.1}
-            {value}
-            number_changed={temperature_changed}
+            value={temperature_state.value()}
+            {number_changed}
         />
     }
 }
@@ -142,19 +145,34 @@ impl Number for f64 {}
 
 #[derive(Properties, PartialEq)]
 struct RelativeHumidityProps {
-    value: u8,
-    humidity_changed: Callback<u8>
+    #[prop_or_default]
+    value: RelativeHumidity,
+    #[prop_or_default]
+    humidity_changed: Callback<RelativeHumidity>
 }
 
 #[function_component]
 fn RelativeHumidityComponent(RelativeHumidityProps { value, humidity_changed }: &RelativeHumidityProps) -> Html {
+    let relative_humidity_state = use_state(|| value.clone());
+    let humidity_changed = humidity_changed.clone();
+
+    let number_changed = {
+        let relative_humidity_state = relative_humidity_state.clone();
+
+        Callback::from(move |number: u8| {
+            let relative_humidity = RelativeHumidity::new(number);
+            relative_humidity_state.set(relative_humidity.clone());
+            humidity_changed.emit(relative_humidity);
+        })
+    };
+
     html! {
         <NumberInput<u8>
-            min={1u8}
-            max={100u8}
+            min={MIN_HUMIDITY}
+            max={MAX_HUMIDITY}
             step={1u8}
-            {value}
-            number_changed={humidity_changed}
+            value={relative_humidity_state.value()}
+            {number_changed}
         />
     }
 }
@@ -162,10 +180,15 @@ fn RelativeHumidityComponent(RelativeHumidityProps { value, humidity_changed }: 
 #[derive(Properties, PartialEq)]
 struct NumberInputProps<T>
 where T: Number {
+    #[prop_or_default]
     value: T,
+    #[prop_or_default]
     min: T,
+    #[prop_or_default]
     max: T,
+    #[prop_or_default]
     step: T,
+    #[prop_or_default]
     number_changed: Callback<T>
 }
 
