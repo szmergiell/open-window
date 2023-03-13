@@ -1,18 +1,25 @@
-use owlib::open_window::{measurement::Measurement, relative_humidity::RelativeHumidity, temperature::Temperature};
-use yew::{function_component, use_state, Html, Callback, html, Properties};
+use owlib::open_window::{
+    measurement::Measurement, relative_humidity::RelativeHumidity, temperature::Temperature,
+};
+use yew::{function_component, html, use_state, Callback, Html, Properties};
 
-use crate::{temperature::TemperatureComponent, relative_humidity::RelativeHumidityComponent};
+use crate::{relative_humidity::RelativeHumidityComponent, temperature::TemperatureComponent};
 
 #[derive(Properties, PartialEq)]
 pub struct MeasurementProps {
     #[prop_or_default]
     pub measurement: Measurement,
     #[prop_or_default]
-    pub measurement_changed: Callback<Measurement>
+    pub measurement_changed: Callback<Measurement>,
 }
 
 #[function_component]
-pub fn MeasurementComponent(MeasurementProps { measurement, measurement_changed }: &MeasurementProps) -> Html {
+pub fn MeasurementComponent(
+    MeasurementProps {
+        measurement,
+        measurement_changed,
+    }: &MeasurementProps,
+) -> Html {
     let measurement_state = use_state(|| measurement.clone());
 
     let humidity_changed = {
@@ -22,7 +29,7 @@ pub fn MeasurementComponent(MeasurementProps { measurement, measurement_changed 
         Callback::from(move |relative_humidity: RelativeHumidity| {
             let measurement = Measurement {
                 temperature: measurement_state.temperature.clone(),
-                relative_humidity
+                relative_humidity,
             };
             measurement_state.set(measurement.clone());
             measurement_changed.emit(measurement);
@@ -36,7 +43,7 @@ pub fn MeasurementComponent(MeasurementProps { measurement, measurement_changed 
         Callback::from(move |temperature: Temperature| {
             let measurement = Measurement {
                 temperature,
-                relative_humidity: measurement_state.relative_humidity.clone()
+                relative_humidity: measurement_state.relative_humidity.clone(),
             };
             measurement_state.set(measurement.clone());
             measurement_changed.emit(measurement);

@@ -1,7 +1,7 @@
-use owlib::open_window::relative_humidity::{RelativeHumidity, MIN_HUMIDITY, MAX_HUMIDITY};
-use yew::{function_component, use_state, Html, Callback, html, Properties};
+use owlib::open_window::relative_humidity::{RelativeHumidity, MAX_HUMIDITY, MIN_HUMIDITY};
+use yew::{function_component, html, use_state, Callback, Html, Properties};
 
-use crate::number_input::{NumberInput, Number};
+use crate::number_input::{Number, NumberInput};
 
 impl Number for u8 {}
 
@@ -10,11 +10,16 @@ pub struct RelativeHumidityProps {
     #[prop_or_default]
     pub value: RelativeHumidity,
     #[prop_or_default]
-    pub humidity_changed: Callback<RelativeHumidity>
+    pub humidity_changed: Callback<RelativeHumidity>,
 }
 
 #[function_component]
-pub fn RelativeHumidityComponent(RelativeHumidityProps { value, humidity_changed }: &RelativeHumidityProps) -> Html {
+pub fn RelativeHumidityComponent(
+    RelativeHumidityProps {
+        value,
+        humidity_changed,
+    }: &RelativeHumidityProps,
+) -> Html {
     let relative_humidity_state = use_state(|| value.clone());
 
     let number_changed = {

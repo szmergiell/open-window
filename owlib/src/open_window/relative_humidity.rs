@@ -65,6 +65,8 @@ impl RelativeHumidity {
 
 impl Default for RelativeHumidity {
     fn default() -> Self {
-        Self { value: MIN_HUMIDITY }
+        Self {
+            value: MIN_HUMIDITY,
+        }
     }
 }

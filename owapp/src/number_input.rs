@@ -1,14 +1,16 @@
 use std::{fmt::Display, str::FromStr};
 
 use wasm_bindgen::JsCast;
-use web_sys::{HtmlInputElement, Event};
-use yew::{function_component, Html, Callback, html, Properties};
+use web_sys::{Event, HtmlInputElement};
+use yew::{function_component, html, Callback, Html, Properties};
 
 pub trait Number: PartialEq + PartialOrd + Default + FromStr + Display + Clone + 'static {}
 
 #[derive(Properties, PartialEq)]
 pub struct NumberInputProps<T>
-where T: Number {
+where
+    T: Number,
+{
     #[prop_or_default]
     pub value: T,
     #[prop_or_default]
@@ -18,13 +20,22 @@ where T: Number {
     #[prop_or_default]
     pub step: T,
     #[prop_or_default]
-    pub number_changed: Callback<T>
+    pub number_changed: Callback<T>,
 }
 
 #[function_component]
-pub fn NumberInput<T>(NumberInputProps { value, min, max, step, number_changed }: &NumberInputProps<T>) -> Html
-where T: Number {
-
+pub fn NumberInput<T>(
+    NumberInputProps {
+        value,
+        min,
+        max,
+        step,
+        number_changed,
+    }: &NumberInputProps<T>,
+) -> Html
+where
+    T: Number,
+{
     let onchange = {
         let number_changed = number_changed.clone();
         let min = min.clone();

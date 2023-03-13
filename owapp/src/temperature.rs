@@ -1,7 +1,7 @@
-use owlib::open_window::temperature::{Temperature, MIN_TEMP, MAX_TEMP};
-use yew::{function_component, use_state, Html, Callback, html, Properties};
+use owlib::open_window::temperature::{Temperature, MAX_TEMP, MIN_TEMP};
+use yew::{function_component, html, use_state, Callback, Html, Properties};
 
-use crate::number_input::{NumberInput, Number};
+use crate::number_input::{Number, NumberInput};
 
 impl Number for f64 {}
 
@@ -10,11 +10,16 @@ pub struct TemperatureProps {
     #[prop_or_default]
     pub value: Temperature,
     #[prop_or_default]
-    pub temperature_changed: Callback<Temperature>
+    pub temperature_changed: Callback<Temperature>,
 }
 
 #[function_component]
-pub fn TemperatureComponent(TemperatureProps { value, temperature_changed }: &TemperatureProps) -> Html {
+pub fn TemperatureComponent(
+    TemperatureProps {
+        value,
+        temperature_changed,
+    }: &TemperatureProps,
+) -> Html {
     let temperature_state = use_state(|| value.clone());
 
     let number_changed = {
