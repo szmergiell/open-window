@@ -35,6 +35,7 @@ pub fn RelativeHumidityComponent(
 
     html! {
         <NumberInput<u8>
+            label="Relative Humidity [%]"
             min={MIN_HUMIDITY}
             max={MAX_HUMIDITY}
             step={1u8}

@@ -1,0 +1,22 @@
+@media (prefers-color-scheme: dark) {
+  html {
+    filter: invert(90%) hue-rotate(180deg);
+  }
+}
+
+main {
+  width: 30rem;
+  margin: 0 auto;
+}
+
+.measurement {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+}
+
+.measurement label {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.25rem;
+}

@@ -12,6 +12,8 @@ where
     T: Number,
 {
     #[prop_or_default]
+    pub label: String,
+    #[prop_or_default]
     pub value: T,
     #[prop_or_default]
     pub min: T,
@@ -26,6 +28,7 @@ where
 #[function_component]
 pub fn NumberInput<T>(
     NumberInputProps {
+        label,
         value,
         min,
         max,
@@ -61,13 +64,16 @@ where
     };
 
     html! {
-        <input
-            type="number"
-            min={min.to_string()}
-            max={max.to_string()}
-            step={step.to_string()}
-            value={value.to_string()}
-            {onchange}
-        />
+        <label>
+            { label }
+            <input
+                type="number"
+                min={min.to_string()}
+                max={max.to_string()}
+                step={step.to_string()}
+                value={value.to_string()}
+                {onchange}
+            />
+        </label>
     }
 }

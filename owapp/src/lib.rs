@@ -39,17 +39,27 @@ pub fn app() -> Html {
     };
 
     html! {
-        <>
-            <h1>{ "Open Window App" }</h1>
-            <MeasurementComponent
-                measurement={(*indoor_measurement).clone()}
-                measurement_changed={indoor_measurement_changed}
-            />
-            <MeasurementComponent
-                measurement={(*outdoor_measurement).clone()}
-                measurement_changed={outdoor_measurement_changed}
-            />
-            <h2>{open_window_memo}</h2>
-        </>
+        <main>
+            <article>
+                <h1>{ "Open Window App" }</h1>
+                <p>
+                {"This little tool answers a question whether one should open windows in order to decrease indoor humidity."}
+                </p>
+                <p>
+                {"Question is answered by comparing indoor and outdoor dew points calculated based on indoor/outdoor temperature and relative humidity measurements."}
+                </p>
+                <MeasurementComponent
+                    label="Indoor Measurement"
+                    measurement={(*indoor_measurement).clone()}
+                    measurement_changed={indoor_measurement_changed}
+                />
+                <MeasurementComponent
+                    label="Outdoor Measurement"
+                    measurement={(*outdoor_measurement).clone()}
+                    measurement_changed={outdoor_measurement_changed}
+                />
+                <h2>{open_window_memo}</h2>
+            </article>
+        </main>
     }
 }

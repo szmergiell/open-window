@@ -7,6 +7,8 @@ use crate::{relative_humidity::RelativeHumidityComponent, temperature::Temperatu
 
 #[derive(Properties, PartialEq)]
 pub struct MeasurementProps {
+    #[prop_or(String::from("Measurement"))]
+    pub label: String,
     #[prop_or_default]
     pub measurement: Measurement,
     #[prop_or_default]
@@ -16,6 +18,7 @@ pub struct MeasurementProps {
 #[function_component]
 pub fn MeasurementComponent(
     MeasurementProps {
+        label,
         measurement,
         measurement_changed,
     }: &MeasurementProps,
@@ -51,7 +54,8 @@ pub fn MeasurementComponent(
     };
 
     html! {
-        <div>
+        <div class="measurement">
+            <h2>{ label }</h2>
             <TemperatureComponent
                 value={measurement_state.temperature.clone()}
                 {temperature_changed}
@@ -60,7 +64,10 @@ pub fn MeasurementComponent(
                 value={measurement_state.relative_humidity.clone()}
                 {humidity_changed}
             />
-            <input type="number" disabled={true} value={measurement_state.calculate_dew_point().to_string()}/>
+            <label>
+                { "Dew Point [°C]" }
+                <input type="number" disabled={true} value={format!("{:.2}", measurement_state.calculate_dew_point())}/>
+            </label>
         </div>
     }
 }

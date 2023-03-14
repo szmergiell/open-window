@@ -35,6 +35,7 @@ pub fn TemperatureComponent(
 
     html! {
         <NumberInput<f64>
+            label="Temperature [°C]"
             min={MIN_TEMP}
             max={MAX_TEMP}
             step={0.1}
