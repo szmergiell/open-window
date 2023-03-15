@@ -55,7 +55,7 @@ pub fn MeasurementComponent(
 
     html! {
         <div class="measurement">
-            <h2>{ label }</h2>
+            <h3>{ label }</h3>
             <TemperatureComponent
                 value={measurement_state.temperature.clone()}
                 {temperature_changed}

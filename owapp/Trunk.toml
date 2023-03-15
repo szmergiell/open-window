@@ -1,0 +1,6 @@
+[build]
+target = "index.html"
+public_url = "./"
+filehash = false
+release = true
+dist = "../docs"

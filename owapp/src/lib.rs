@@ -54,7 +54,7 @@ pub fn app() -> Html {
         |(indoor_measurement, outdoor_measurement)| {
             let open_window = open_window::open_window(indoor_measurement, outdoor_measurement);
             if open_window {
-                return String::from("YES!");
+                return String::from("YES :)");
             }
             String::from("NO :(")
         },
@@ -94,13 +94,16 @@ pub fn app() -> Html {
     html! {
         <main>
             <article>
-                <h1>{ "Open Window App" }</h1>
-                <p>
-                {"This little tool answers a question whether one should open windows in order to decrease indoor humidity."}
-                </p>
-                <p>
-                {"Question is answered by comparing indoor and outdoor dew points calculated based on indoor/outdoor temperature and relative humidity measurements."}
-                </p>
+                <h2>{ "Should you open windows?" }</h2>
+                <details>
+                    <summary>{ "How it works?" }</summary>
+                    <p>
+                        {"This little tool answers a question whether one should open windows in order to decrease indoor humidity."}
+                    </p>
+                    <p>
+                        {"Question is answered by comparing indoor and outdoor dew points calculated based on indoor/outdoor temperature and relative humidity measurements."}
+                    </p>
+                </details>
                 <MeasurementComponent
                     label="Indoor Measurement"
                     measurement={(*indoor_measurement).clone()}
