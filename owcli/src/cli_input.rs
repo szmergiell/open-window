@@ -4,14 +4,14 @@ use clap::Parser;
 #[command(author, version, about, long_about = None)]
 pub struct CliInput {
     #[arg()]
-    /// Indoor temperature in Celcius degress
+    /// Indoor temperature in Celsius degrees
     pub indoor_temperature: f64,
     #[arg()]
     /// Indoor relative humidity expressed as percentage (not fraction of 1)
     pub indoor_humidity: u8,
 
     #[arg()]
-    /// Outdoor temperature in Celcius degress
+    /// Outdoor temperature in Celsius degrees
     pub outdoor_temperature: f64,
     #[arg()]
     /// Outdoor relative humidity expressed as percentage (not fraction of 1)

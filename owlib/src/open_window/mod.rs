@@ -1,9 +1,9 @@
 use self::measurement::Measurement;
 
-/// Modules holds necesarry structures and functions for creating `Measurement`.
+/// Modules holds necessary structures and functions for creating `Measurement`.
 pub mod measurement;
 
-/// Modules holds necesarry structures and functions for creating `RelativeHumidity`.
+/// Modules holds necessary structures and functions for creating `RelativeHumidity`.
 pub mod relative_humidity;
 
 /// Modules holds necesarry structures and functions for creating `Temperature`.

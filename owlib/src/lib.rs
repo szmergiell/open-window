@@ -30,6 +30,6 @@
 //!
 //! let open_window = open_window(&indoor_measurement, &outdoor_measurement);
 
-/// Module holds necesarry strucutres and functions to calculate dew points and
+/// Module holds necessary structures and functions to calculate dew points and
 /// answer the "should you open windows" question.
 pub mod open_window;

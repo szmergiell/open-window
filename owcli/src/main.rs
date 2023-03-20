@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("{json}");
             } else {
                 println!("Indoor dew point: {:.2}", output.indoor_dew_point);
-                println!("Ourdoor dew point: {:.2}", output.outdoor_dew_point);
+                println!("Outdoor dew point: {:.2}", output.outdoor_dew_point);
                 let message = match output.open_window {
                     true => "Open window!",
                     false => "Close window!",

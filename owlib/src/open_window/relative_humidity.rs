@@ -32,7 +32,7 @@ impl RelativeHumidity {
     ///
     /// # Panics
     ///
-    /// Panics if provided value is not a valid relative humidity value (`(0..=100)`).
+    /// Panics if provided value is not a valid relative humidity value (`(1..=100)`).
     pub fn new(value: u8) -> Self {
         if !Self::valid(value) {
             panic!("{}", VALIDATION_ERROR);

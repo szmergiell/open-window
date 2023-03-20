@@ -21,9 +21,9 @@ _owcli() {
 '--help[Print help]' \
 '-V[Print version]' \
 '--version[Print version]' \
-':indoor_temperature -- Indoor temperature in Celcius degress:' \
+':indoor_temperature -- Indoor temperature in Celsius degrees:' \
 ':indoor_humidity -- Indoor relative humidity expressed as percentage (not fraction of 1):' \
-':outdoor_temperature -- Outdoor temperature in Celcius degress:' \
+':outdoor_temperature -- Outdoor temperature in Celsius degrees:' \
 ':outdoor_humidity -- Outdoor relative humidity expressed as percentage (not fraction of 1):' \
 && ret=0
 }
