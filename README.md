@@ -1,4 +1,4 @@
-# OpenWindow
+# Open Window
 
 ## [https://szmergiell.github.io/open-window/](https://szmergiell.github.io/open-window/)
 
