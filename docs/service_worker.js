@@ -1,10 +1,18 @@
-var cacheName = "ow-pwa";
+var cacheName = "ow-pwa-v1";
+
 var filesToCache = [
-  "/open-window/",
-  "/open-window/index.html",
-  "/open-window/index.css",
-  "/open-window/owapp.js",
-  "/open-window/owap_bg.wasm",
+  "./",
+  "./index.html",
+  "./index.css",
+  "./owapp.js",
+  "./owapp_bg.wasm",
+  "./icon-48.png",
+  "./icon-72.png",
+  "./icon-96.png",
+  "./icon-144.png",
+  "./icon-168.png",
+  "./icon-192.png",
+  "./icon-256.png",
 ];
 
 /* Start the service worker and cache all of the app's content */
@@ -18,22 +26,25 @@ self.addEventListener("install", function (e) {
 
 /* Serve cached content when offline */
 self.addEventListener("fetch", function (e) {
-  console.log(`[Service Worker] Fetched resource: ${e.request.url}`);
   e.respondWith(
-    caches.match(e.request).then(function (request) {
-      if (request) {
-        // if cache is available, respond with cache
-        console.log("responding with cache : " + e.request.url);
-        return request;
-      } else {
-        // if there are no cache, try fetching request
-        console.log("file is not cached, fetching : " + e.request.url);
-        return fetch(e.request);
-      }
+    caches.match(e.request).then(function (response) {
+      return response || fetch(e.request);
+    })
+  );
+});
 
-      // You can omit if/else for console.log & put one line below like this too.
-      // return request || fetch(e.request)
-      // return response || fetch(e.request);
+/* Clear old cache */
+self.addEventListener("activate", function (e) {
+  e.waitUntil(
+    caches.keys().then(function (keyList) {
+      return Promise.all(
+        keyList.map(function (key) {
+          if (key === cacheName) {
+            return;
+          }
+          return caches.delete(key);
+        })
+      );
     })
   );
 });

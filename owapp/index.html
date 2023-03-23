@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Should you open windows?</title>
@@ -10,18 +11,20 @@
     <link data-trunk rel="copy-file" href="icon-72.png" />
     <link data-trunk rel="copy-file" href="icon-96.png" />
     <link data-trunk rel="copy-file" href="icon-144.png" />
+    <link data-trunk rel="copy-file" href="icon-168.png" />
     <link data-trunk rel="copy-file" href="icon-192.png" />
     <link data-trunk rel="copy-file" href="icon-256.png" />
     <link data-trunk rel="copy-file" href="service_worker.js" />
     <link rel="manifest" href="manifest.json" />
     <script>
-      window.onload = () => {
-        "use strict";
+        window.onload = () => {
+            "use strict";
 
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("./service_worker.js");
-        }
-      };
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("./service_worker.js");
+            }
+        };
     </script>
-  </head>
+</head>
+
 </html>

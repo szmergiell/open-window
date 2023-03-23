@@ -11,18 +11,20 @@
     
     
     
+    
     <link rel="manifest" href="manifest.json">
     <script>
-      window.onload = () => {
-        "use strict";
+        window.onload = () => {
+            "use strict";
 
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("./service_worker.js");
-        }
-      };
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("./service_worker.js");
+            }
+        };
     </script>
-  
+
 <link rel="preload" href="./owapp_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
 <link rel="modulepreload" href="./owapp.js"></head>
+
 <body>
 <script type="module">import init from './owapp.js';init('./owapp_bg.wasm');</script></body></html>
